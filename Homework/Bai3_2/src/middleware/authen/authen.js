@@ -8,7 +8,6 @@ const  verifyUserId = async (req, res, next) => {
     if (!userId) {
         return res.status(400).json({ message: 'UserId not found' });
     }
-
     // Kiem tra user trong he thong 
     const isExistsUser =  await User.exists({_id:userId})  
     if (!isExistsUser) {

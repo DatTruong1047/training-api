@@ -1,11 +1,11 @@
 // validates/index.js
 
-const {validateCreateTodo, validateUpdateTodo} = require('./todos');
+const {validateCreateTask, validateUpdateTask} = require('./tasks');
 const {validateCreateUser, validateUpdateUser} = require('./users');
 
 module.exports = {
-    validateCreateTodo,
-    validateUpdateTodo,
+    validateCreateTask,
+    validateUpdateTask,
     validateCreateUser,
     validateUpdateUser
 };

@@ -1,8 +1,6 @@
 const { body , validationResult} = require('express-validator')
-const User = require('../../models/User')
-const mongoose = require('mongoose')
 
-const validateCreateTodo = [
+const validateCreateTask = [
     body('title')
         .notEmpty().withMessage('Title is required')
         .isString().withMessage('Title must be a string'),
@@ -24,7 +22,7 @@ const validateCreateTodo = [
     }
 ];
 
-const validateUpdateTodo = [
+const validateUpdateTask = [
     body('title')
         .optional()
         .isString().withMessage('Title must be a string'),
@@ -46,4 +44,4 @@ const validateUpdateTodo = [
         next();
     }
 ];
-module.exports = {validateCreateTodo, validateUpdateTodo};
+module.exports = {validateCreateTask, validateUpdateTask};
