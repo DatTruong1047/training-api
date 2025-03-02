@@ -2,8 +2,22 @@ const { body , validationResult} = require('express-validator')
 const User = require('../../models/User')
 const mongoose = require('mongoose')
 
+
+const validateChangePasswork = [
+    body('oldpassword')
+        .isEmpty().withMessage('Old password is required'),
+    body('newpassword')
+        .isEmpty().withMessage('New password is required'),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errrors: errors.array() });
+        }
+        next();
+    }
+]
 const validateCreateUser = [
-    body('name')
+    body('username')
         .notEmpty().withMessage('Name is required')
         .isString().withMessage('Name must be a string'),
     body('email')
@@ -20,7 +34,7 @@ const validateCreateUser = [
 ];
 
 const validateUpdateUser = [
-    body('name')
+    body('username')
         .optional()
         .notEmpty().withMessage('Name is required')
         .isString().withMessage('Name must be a string'),
@@ -38,4 +52,4 @@ const validateUpdateUser = [
         next();
     }
 ];
-module.exports = {validateCreateUser, validateUpdateUser};
+module.exports = {validateCreateUser, validateUpdateUser, validateChangePasswork};
