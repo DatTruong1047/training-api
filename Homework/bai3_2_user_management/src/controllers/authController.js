@@ -109,7 +109,11 @@ exports.verifyPassword = (user, password) => {
     return hashedPassword === providedHash;
 };
 
-
+/**
+ * Hàm xác nhận email
+ * Lấy email và tìm user theo email
+ * Xác nhận email
+ */
 exports.verifyEmail = async (req, res) => {
     const { token } = req.query;
   

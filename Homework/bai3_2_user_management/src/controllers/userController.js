@@ -1,9 +1,11 @@
 const User = require('../models/User');
-const { verifyPassword } = require('./auth');
+const { verifyPassword } = require('./authController');
 const crypto = require('crypto')
 
-// GET /users
-// Chi admin duoc quyen lay tat ca user
+/**
+ * GET /users
+ * Lấy danh sách người dùng
+ */
 exports.getUsers = async (req, res) => {
     try {
         const query = {};
@@ -21,7 +23,11 @@ exports.getUsers = async (req, res) => {
     }
 };
 
-// GET /users/profile
+/**
+ * GET /users/profile
+ * Tìm user theo user_id
+ * Trả về thông tin cần thiết
+ */
 exports.getUserProfile = async (req, res) => {
     try {
         const payload = req.payload;
@@ -46,7 +52,12 @@ exports.getUserProfile = async (req, res) => {
     }
 }
 
-// PUT /users/profile
+
+/**
+ * PUT /users/profile
+ * Tìm user theo id
+ * Cập nhật thông tin người dùng
+ */
 exports.updatedUserProfile  = async (req, res) => {
     try {
         const payload = req.payload;
@@ -71,7 +82,12 @@ exports.updatedUserProfile  = async (req, res) => {
     }
 };
 
-// PUT /users/change-password
+/**
+ * PUT /users/change-password
+ * Tìm user theo id
+ * Gọi hàm verifyPassword để so sanh password 
+ * Hash password mới lưu vào db
+ */
 exports.changeUserPassword  = async (req, res) => {
     try {
         const {oldPassword, newPassword} = req.body;

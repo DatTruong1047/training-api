@@ -1,5 +1,9 @@
 const User = require('../../models/User');
 
+/**
+ * Lấy thông tin trong payload
+ * Kiểm tra thông tin phải admin không
+ */
 const adminMiddleware = async (req, res, next) => {
     try {
         const role = req.payload.role;

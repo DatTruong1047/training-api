@@ -15,11 +15,15 @@ const APP_PASSWORD = process.env.APP_PASSWORD;
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.EMAIL_USER, 
-      pass: process.env.APP_PASSWORD, 
+      user: EMAIL_USER, 
+      pass: APP_PASSWORD, 
     },
 });
 
+
+/**
+ * Hàm gửi email
+ */
 const sendVerificationEmail = async (email, verificationLink) => {
 
     console.log(USER_EMAIL,APP_PASSWORD);

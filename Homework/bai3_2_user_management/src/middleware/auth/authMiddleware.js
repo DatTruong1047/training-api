@@ -4,6 +4,11 @@ require('dotenv').config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
+/**
+ * Lấy token từ header
+ * Verify token
+ * Tìm user theo id trong payload
+ */
 const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
 
