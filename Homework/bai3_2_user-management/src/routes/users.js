@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/User");
+const Order = require("../models/Order");
 const crypto = require("crypto");
 
 /**
@@ -150,7 +151,20 @@ router.put("/profile", authMiddleware, async (req, res) => {
     }
 });
 
-
+/**
+ * 3.4. Xem danh sách đơn hàng của user
+ * @api /user/orders
+ */
+router.get('/orders', authMiddleware, async (req, res) => {
+    try {
+      const userId = req.userInfor._id;
+      // Lấy đơn hàng của user, sắp xếp theo thời gian tạo mới nhất
+      const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
+      res.status(200).json(orders);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+});
 
 
 /**
