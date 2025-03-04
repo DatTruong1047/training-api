@@ -52,7 +52,7 @@ router.post("/sign-in", async (req, res) => {
 
         // Kiểm tra xác thực email
         if (!existingUser.isVerified) {
-            return res.status(400).json({ message: "Account is not verified. Please check your email to verify your account." })
+            return res.status(401).json({ message: "Account is not verified. Please check your email to verify your account." })
         }
 
         // So sánh mật khẩu
@@ -62,10 +62,7 @@ router.post("/sign-in", async (req, res) => {
         }
 
         // Tao authToken 
-        const salt = getSaltFromPassword(existingUser.password);
-        if (!salt) {
-            return res.status(500).json({ message: 'Failed to retrieve salt.' }); // Or other appropriate error
-        }
+        const salt = crypto.randomBytes(16).toString("hex");
         const authToken = crypto
             .pbkdf2Sync(`${existingUser._id}`, salt, 1000, 64, "sha512")
             .toString("hex");
@@ -123,12 +120,12 @@ router.post("/sign-up", async (req, res) => {
         // Kiem tra username 
         let existingUsername = await User.findOne({ username })
         if (existingUsername) {
-            return res.status(400).json({ message: "This username has already been used" });
+            return res.status(409).json({ message: "This username has already been used" });
         }
         // Kiểm tra email
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ message: "This email has already been used" });
+            return res.status(409).json({ message: "This email has already been used" });
         }
 
         // Hash mật khẩu
@@ -229,7 +226,7 @@ router.post("/sign-out",authMiddleware, async (req, res) => {
     }
 });
 
-// PUT /password-reset
+// PUT /reset-password
 /**
  * Đăng nhập thì mới cho đổi mật khẩu
  * Lấy thông tin user từ authMiddleware
@@ -237,7 +234,7 @@ router.post("/sign-out",authMiddleware, async (req, res) => {
  * Gọi hàm verifyPassword để so sanh password 
  * Hash password mới va lưu vào db
  */
-router.put("/password-reset-request", authMiddleware, async (req, res) => {
+router.put("/change-password", authMiddleware, async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
         const user = req.userInfor;
@@ -276,7 +273,7 @@ router.put("/password-reset-request", authMiddleware, async (req, res) => {
 });
 
 
-// POST /auth/password-reset-request
+// POST /auth/forgot-password
 /**
  * Quên mất khẩu - không cần đăng nhập
  * Validate email gửi lên
@@ -285,7 +282,7 @@ router.put("/password-reset-request", authMiddleware, async (req, res) => {
  * Tạo url chứa token
  * 
  */
-router.post("/password-forgot-request", async (req, res) => {
+router.post("/forgot-password", async (req, res) => {
     try {
         const { email } = req.body;
         //Validation 
@@ -308,7 +305,7 @@ router.post("/password-forgot-request", async (req, res) => {
         await user.save();
 
         // Tạo URL 
-        const verificationLink = `http://localhost:5050/api/auth/password-forgot-request/${resetToken}`;
+        const verificationLink = `http://localhost:5050/api/auth/forgot-password/${resetToken}`;
         // Xu ly gui email
 
         // return
@@ -322,13 +319,13 @@ router.post("/password-forgot-request", async (req, res) => {
 });
 
 
-// GET /auth/password-reset-request/:token
+// GET /auth/forgot-password/:token
 /**
  * Lấy token từ params
  * Tìm kiếm user theo token-reset-password
  * Nếu user tồn tại -> accept 
  */
-router.get('/password-forgot-request/:token', async (req, res) => {
+router.get('/forgot-password/:token', async (req, res) => {
     try {
         const { token } = req.params;
 
@@ -348,7 +345,7 @@ router.get('/password-forgot-request/:token', async (req, res) => {
 });
 
 
-// PUT /auth/reset-password-request/:token
+// PUT /auth/forgot-password/:token
 /**
  * Lấy token từ params
  * Lấy password gửi lên , validate
@@ -357,7 +354,7 @@ router.get('/password-forgot-request/:token', async (req, res) => {
  * Xóa resetToken
  * 
  */
-router.put('/password-forgot-request/:token', async (req, res) => {
+router.put('/forgot-password/:token', async (req, res) => {
     try {
         const { token } = req.params;
         const { password } = req.body;
@@ -399,7 +396,7 @@ router.put('/password-forgot-request/:token', async (req, res) => {
  * Tạo token để xác thực email
  * Trả về URL
  */
-router.get("/email-resent-request/:email", async (req, res) => {
+router.get("/resent-email/:email", async (req, res) => {
     try {
         const {email} = req.params;
 

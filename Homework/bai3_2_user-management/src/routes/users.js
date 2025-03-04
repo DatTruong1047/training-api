@@ -122,11 +122,11 @@ router.put("/profile", authMiddleware, async (req, res) => {
         // Kiểm tra username, email đã được người khác sử dụng ?
         const existingUsernameUser = await User.findOne({ username });
         if(existingUsernameUser && existingUsernameUser._id.toString() !== user._id.toString()){
-            return res.status(400).json({message : 'This username has already been used'});
+            return res.status(409).json({message : 'This username has already been used'});
         }
         const existingEmailUser = await User.findOne({ email });
         if(existingEmailUser && existingEmailUser._id.toString() !== user._id.toString()){
-            return res.status(400).json({message : 'This email has already been used'});
+            return res.status(409).json({message : 'This email has already been used'});
         }
 
         user.username = req.body.username || user.username;
